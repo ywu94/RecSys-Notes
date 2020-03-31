@@ -10,7 +10,6 @@ import os
 import sys
 import shutil
 import pickle
-import joblib
 
 import sys
 import logging
@@ -100,10 +99,29 @@ def split_train(train_path, train_split_dir, row_per_file=2**13*100):
         shutil.rmtree(feature_dict_dir, onerror=handle_error)
     os.mkdir(feature_dict_dir)
     
-    featire_dict_path = os.path.join(feature_dict_dir, 'categorical_feature_dict_raw.pkl')
-    joblib.dump(feature_dict, featire_dict_path)
-    logger.info('Categorical feature dictionary is saved to {}'.format(featire_dict_path))
+    feature_dict_path = os.path.join(feature_dict_dir, 'categorical_feature_dict_raw.pkl')
+    with open(feature_dict_path, 'wb') as fsave:
+        pickle.dump(feature_dict, fsave)
+    logger.info('Categorical feature dictionary is saved to {}'.format(feature_dict_path))
     
+    """
+    index 1~39 are reserved for missing features
+    index 40~52 are reserved for numerical features
+    index 53 onwards are for categorical feature encoding
+    """
+    
+    embedding_index = 53
+    embedding_map_dict = {}
+    for index in feature_dict.keys():
+        for k, v in feature_dict[index].items():
+            if k and v >= 10:
+                embedding_map_dict[str(index)+k] = embedding_index
+                embedding_index += 1
+                
+    embedding_map_dict_path = os.path.join(feature_dict_dir, 'categorical_feature_map_dict.pkl')
+    with open(embedding_map_dict_path, 'wb') as fsave:
+        pickle.dump(embedding_map_dict, fsave)
+    logger.info('Embedding map dictionary is saved to {}'.format(embedding_map_dict_path))
     
 def split_test(test_path, test_split_dir, row_per_file=2**13*100):
     """
