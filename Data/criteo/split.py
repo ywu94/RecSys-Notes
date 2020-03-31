@@ -1,9 +1,5 @@
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-
 """
-Split the data file into smaller files.
+Split the data file into smaller files and generate embedding map dictionary.
 """
 
 import os
@@ -19,13 +15,11 @@ importlib.reload(logging)
 logging.basicConfig(stream=sys.stdout, format='%(asctime)s %(levelname)-6s %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
 logger = logging.getLogger(__name__)
 
-import numpy as np
-
 def handle_error(func, path, exc_info):
     """
     Handle error for shutil.
     """
-    print('Handling Error for file ' , path)
+    print('Handling Error for file {}'.format(path))
     print(exc_info)
     if not os.access(path, os.W_OK):
         os.chmod(path, stat.S_IWUSR)
@@ -104,12 +98,6 @@ def split_train(train_path, train_split_dir, row_per_file=2**13*100):
         pickle.dump(feature_dict, fsave)
     logger.info('Categorical feature dictionary is saved to {}'.format(feature_dict_path))
     
-    """
-    index 1~39 are reserved for missing features
-    index 40~52 are reserved for numerical features
-    index 53 onwards are for categorical feature encoding
-    """
-    
     embedding_index = 53
     embedding_map_dict = {}
     for index in feature_dict.keys():
@@ -155,5 +143,6 @@ def split_criteo(row_per_file=2**13*100):
     split_test(test_path, test_split_dir, row_per_file=row_per_file)
     
 if __name__ == '__main__':
-    split_criteo()
+    ROW_PER_FILE = 2**13*100
+    split_criteo(row_per_file=ROW_PER_FILE)
     
