@@ -2,7 +2,7 @@
 
 Classic papers and resources on recommendation system, along with python implementation (focusing on PyTorch).
 
-## Data
+## Data Preparation
 
 ### Criteo Data
 
