@@ -143,6 +143,6 @@ def split_criteo(row_per_file=2**13*100):
     split_test(test_path, test_split_dir, row_per_file=row_per_file)
     
 if __name__ == '__main__':
-    ROW_PER_FILE = 2**13*100
+    ROW_PER_FILE = 2**15*100
     split_criteo(row_per_file=ROW_PER_FILE)
     

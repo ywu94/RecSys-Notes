@@ -11,11 +11,13 @@ assert torch.__version__>='1.2.0', 'Expect PyTorch>=1.2.0 but get {}'.format(tor
 from torch import nn
 
 class FM_2D_Layer(nn.Module):
-    def __init__(self, n_feature, n_field, embedding_dim, *args, **kwargs):
-        super(FM_2D_Layer, self).__init__(*args, **kwargs)
+    def __init__(self, n_feature, n_field, embedding_dim, reg_l1=0, reg_l2=0, **kwargs):
+        super(FM_2D_Layer, self).__init__(**kwargs)
         self.n_feature = n_feature    
         self.n_field = n_field
         self.embedding_dim = embedding_dim
+        self.reg_l1 = reg_l1
+        self.reg_l2 = reg_l2
         
         # Weights for first degree features (None, n_feature, 1)
         self.feature_weight = nn.Embedding(n_feature, 1)                    
@@ -51,5 +53,6 @@ class FM_2D_Layer(nn.Module):
         second_res = torch.sum(second_res, 1)                                   # (None, embedding_dim) -> (None,)
         
         # Final Output
-        output = torch.unsqueeze(first_res + second_res + self.bias, 1)         # (None,) -> (None, 1)
+        output = torch.unsqueeze(first_res + second_res + self.bias, 1)         # (None,) -> (None, 1)                           
+        
         return output
