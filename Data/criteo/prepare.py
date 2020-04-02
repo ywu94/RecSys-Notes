@@ -22,7 +22,17 @@ from functools import reduce
 
 import numpy as np
 
-def prepare_single_file(file_name, embedding_map_dict, process_list, process_lock, training=True, shuffle=True):
+def handle_error(func, path, exc_info):
+    """
+    Handle error for shutil.
+    """
+    print('Handling Error for file {}'.format(path))
+    print(exc_info)
+    if not os.access(path, os.W_OK):
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+
+def prepare_single_file(file_name, embedding_map_dict, save_dir, training=True, shuffle=True):
     """
     Read a file and return feature indexes, feature values and labels if the file contains training data
         : index 1~39 are reserved for missing features
@@ -37,11 +47,16 @@ def prepare_single_file(file_name, embedding_map_dict, process_list, process_loc
     feature_value = []
     label = [] if training else None
     
-    logger.info('Processing {}'.format(file_name))
+    file_index = int(file_name.split('-')[-1])
+    feature_index_path = os.path.join(save_dir, 'train-index-{}.npy'.format(file_index))
+    feature_value_path = os.path.join(save_dir, 'train-value-{}.npy'.format(file_index))
+    label_path = os.path.join(save_dir, 'train-label-{}.npy'.format(file_index))
+    
+    logger.info('Processing {}, results will be saved to {}.'.format(file_name, save_dir))
     f = open(file_name, 'r')
     
     for line_index, line in enumerate(f):
-        if line_index+1%200000==0:
+        if (line_index+1)%200000==0:
             logger.info('{}: {}/3276800'.format(file_name, line_index+1))
         feature = line.rstrip('\n').split('\t')
         if training:
@@ -95,13 +110,12 @@ def prepare_single_file(file_name, embedding_map_dict, process_list, process_loc
         feature_value = feature_value[index_list,:]
         label = label[index_list,:] if training else None
     
-    process_lock.acquire()
-    process_list.append((feature_index, feature_value, label))
-    process_lock.release()
+    np.save(feature_index_path, feature_index)
+    np.save(feature_value_path, feature_value)
+    if training:
+        np.save(label_path, label)
     
     logger.info('Done with {}'.format(file_name))
-    
-    return
 
 if __name__ == '__main__':
     cwd = os.getcwd()
@@ -113,34 +127,24 @@ if __name__ == '__main__':
     train_raw_root = os.path.join(cwd, 'criteo_train_raw_artifact')
     train_raw_list = sorted([os.path.join(train_raw_root, f) for f in os.listdir(train_raw_root)], key = lambda x:int(x.split('-')[-1]))
     
-    process_lock = Lock()
+    train_numpy_dir = os.path.join(cwd, 'criteo_train_numpy_artifact')
+    if os.path.isdir(train_numpy_dir):
+        shutil.rmtree(train_numpy_dir, onerror=handle_error)
+    os.mkdir(train_numpy_dir)
+    
     process_manager = Manager()
-    process_list = process_manager.list()
-
     ns = process_manager.Namespace()
     ns.embedding_map_dict = embedding_map_dict
     
     processes = []
     for artifact_path in train_raw_list:
-        processes.append(Process(target=prepare_single_file, args=(artifact_path, ns.embedding_map_dict, process_list, process_lock)))
+        processes.append(Process(target=prepare_single_file, args=(artifact_path, ns.embedding_map_dict, train_numpy_dir)))
     for p in processes:
         p.start()
     for p in processes:
         p.join()
         
-    train_prepared_dir = os.path.join(cwd, 'criteo_train_prepared_artifact')
-    if os.path.isdir(train_prepared_dir):
-        shutil.rmtree(train_prepared_dir, onerror=handle_error)
-    os.mkdir(train_prepared_dir)
-        
-    feature_index = np.vstack([i[0] for i in process_list])
-    np.save(os.path.join(train_prepared_dir, 'feature_index.npy'), feature_index)
-    
-    feature_value = np.vstack([i[1] for i in process_list])
-    np.save(os.path.join(train_prepared_dir, 'feature_value.npy'), feature_value)
-    
-    label = np.vstack([i[2] for i in process_list])
-    np.save(os.path.join(train_prepared_dir, 'label.npy'), label)
+    shutil.rmtree(train_raw_root, onerror=handle_error)
     
     
 

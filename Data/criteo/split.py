@@ -141,6 +141,8 @@ def split_criteo(row_per_file=2**13*100):
     cwd, train_path, test_path, train_split_dir, test_split_dir = check()
     split_train(train_path, train_split_dir, row_per_file=row_per_file)
     split_test(test_path, test_split_dir, row_per_file=row_per_file)
+    raw_dir = os.path.join(cwd, 'criteo_raw_artifact')
+    shutil.rmtree(raw_dir, onerror=handle_error)
     
 if __name__ == '__main__':
     ROW_PER_FILE = 2**15*100
