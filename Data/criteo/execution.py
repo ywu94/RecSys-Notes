@@ -32,6 +32,8 @@ def get_roc_auc_score(model, test_data, device):
     """
     global BATCH_SIZE
     
+    model.eval()
+    
     pred_y, true_y = [], []
     test_feature_index, test_feature_value, test_label = test_data
 

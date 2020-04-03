@@ -12,6 +12,13 @@ from torch import nn
 
 class FM_2D_Layer(nn.Module):
     def __init__(self, n_feature, n_field, embedding_dim, reg_l1=0, reg_l2=0, **kwargs):
+        """
+        : param n_feature: vocabulary size used for feature embedding (both dense and sparse)
+        : param n_field: number of fields each input will have
+        : param embedding_dim: dimension of dense embedding
+        : param reg_l1: parameter for l1 regularization
+        : param reg_l2: parameter for l1 regularization
+        """
         super(FM_2D_Layer, self).__init__(**kwargs)
         self.n_feature = n_feature    
         self.n_field = n_field
