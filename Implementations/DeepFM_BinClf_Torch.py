@@ -12,10 +12,10 @@ import torch.nn.functional as F
 
 class DeepFM_2D_Layer(nn.Module):
     def __init__(self, n_feature, n_field, embedding_dim, ffn_size, fm_dropout, ffn_dropout, reg_l1=0, reg_l2=0, **kwargs):
-        super(DeepFM_Layer, self).__init__(**kwargs)
+        super(DeepFM_2D_Layer, self).__init__(**kwargs)
         assert isinstance(ffn_size, list)
         assert isinstance(fm_dropout, list) and len(fm_dropout)==2
-        assert isinstance(ffn_dropout) and 1+len(ffn_size)==len(ffn_dropout)
+        assert isinstance(ffn_dropout, list) and 1+len(ffn_size)==len(ffn_dropout)
         
         self.n_feature = n_feature    
         self.n_field = n_field
@@ -28,11 +28,11 @@ class DeepFM_2D_Layer(nn.Module):
         
         # Weights for first degree features (None, n_feature, 1)
         self.first_degree_weight = nn.Embedding(n_feature, 1)                    
-        nn.init.xavier_normal_(self.first_degree.weight)
+        nn.init.xavier_normal_(self.first_degree_weight.weight)
         
         # Weights for feature imbedding (None, n_feature, embedding_dim)
         self.feature_embedding_weight = nn.Embedding(n_feature, embedding_dim)
-        nn.init.xavier_normal_(self.feature_embedding_weight)
+        nn.init.xavier_normal_(self.feature_embedding_weight.weight)
         
         # Deep Network
         nn_dim = [n_field * embedding_dim] + ffn_size
@@ -52,7 +52,7 @@ class DeepFM_2D_Layer(nn.Module):
         feature_value_embed = torch.mul(feature_embedding_weight, feature_value)  # (None, n_field, embedding_dim)
         
         # Calculate first degree output of FM
-        first_res = torch.mul(feature_value, feature_weight)                      # (None, n_field, 1)
+        first_res = torch.mul(feature_value, first_degree_weight)                 # (None, n_field, 1)
         first_res = torch.squeeze(first_res, 2)                                   # (None, n_field, 1) -> (None, n_field)
         first_res = nn.Dropout(self.fm_dropout[0])(first_res)                     # (None, n_field)
         
@@ -65,8 +65,8 @@ class DeepFM_2D_Layer(nn.Module):
         second_res = nn.Dropout(self.fm_dropout[1])(second_res)                   # (None, embedding_dim)
         
         # Calculate deep output
-        inp_deep = torch.flatten(feature_value_embed.reshape, start_dim=1)        # (None, n_field * embedding_dim)
-        inp_deep = nn.Dropout(self.ffn_dropout[0])                                # (None, n_field * embedding_dim)
+        inp_deep = torch.flatten(feature_value_embed, start_dim=1)                # (None, n_field * embedding_dim)
+        inp_deep = nn.Dropout(self.ffn_dropout[0])(inp_deep)                      # (None, n_field * embedding_dim)
         for i in range(len(self.ffn_size)):
             inp_deep = getattr(self, 'ffn_{}'.format(i))(inp_deep)
             inp_deep = getattr(self, 'batch_norm_{}'.format(i))(inp_deep)

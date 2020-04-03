@@ -91,6 +91,8 @@ def train_model(model, train_data, test_data, loss_fn, optimizer, device, checkp
         running_loss = 0
         test_running_loss = 0
         
+        model.train()
+        
         for batch_index in range(n_batch):
             batch_start = batch_index*BATCH_SIZE
             batch_end = min((batch_index+1)*BATCH_SIZE, index_ub-1)          
@@ -118,6 +120,8 @@ def train_model(model, train_data, test_data, loss_fn, optimizer, device, checkp
                 running_loss += loss.item()
                 
                 if (batch_index+1)%1000==0:
+                    model.eval()
+                    
                     batch_index_list = np.random.choice(test_index_ub, 8192)
                     val_index = torch.from_numpy(test_feature_index[batch_index_list]).long().to(device)
                     val_value = torch.from_numpy(test_feature_value[batch_index_list]).float().to(device)
@@ -128,8 +132,12 @@ def train_model(model, train_data, test_data, loss_fn, optimizer, device, checkp
                     
                     logger.info('Epoch {}/{} - Batch {}/{} Done - Train Loss: {:.6f}, Val Loss: {:.6f}'.format(epoch, EPOCHES, (batch_index+1), n_batch, running_loss/(batch_index+1), val_loss.item()))
                     
+                    model.train()
+                    
         pred_y = []
         true_y = []
+        
+        model.eval()
         
         for batch_index in range(test_n_batch):
             batch_start = batch_index*BATCH_SIZE
