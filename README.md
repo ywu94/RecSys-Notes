@@ -2,13 +2,14 @@
 
 Classic papers and resources on recommendation system, along with python implementation (focusing on PyTorch).
 
-## Implemented Model & Performance
+## Covered Model & Performance
 
-Model | Criteo Train AUC | Criteo Test AUC | Implementation | Note
+Model | Key Idea | Criteo Train AUC | Criteo Test AUC | Implementation
 --- | --- | --- | --- | ---
-Factorization Machine | 0.805224 | 0.792564 | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/FM_BinClf_Torch.py) | 
-Deep Factorization Machine | 0.819064 | 0.801416 | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DeepFM_BinClf_Torch.py) | 
-Deep Cross Network | | | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DCN_BinClf_Torch.py) |  
+Factorization Machine | Use embedding and dot product to learn interaction between features | `0.805224` | `0.792564` | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/FM_BinClf_Torch.py), [Notebook](https://github.com/ywu94/RecSys-Notes/blob/master/Notebooks/%5BTorch-FM%5DFactorization_Machine_for_Binary_Classification.ipynb) 
+Field-aware Factorization Machine | Expand embedding matrix to weight interaction between different columns separately | | |
+Deep Factorization Machine | Combine DNN and FM | `0.819064` | `0.801416` | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DeepFM_BinClf_Torch.py), [Notebook](https://github.com/ywu94/RecSys-Notes/blob/master/Notebooks/%5BTorch-DeepFM%5DDeepFM_for_Binary_Classification.ipynb)
+Deep Cross Network | Use cross network to capture higher-degree interaction | | | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DCN_BinClf_Torch.py), [Notebook](https://github.com/ywu94/RecSys-Notes/blob/master/Notebooks/%5BTorch-DCN%5DDCN_for_Binary_Classification.ipynb)
 
 ## Data Preparation
 
