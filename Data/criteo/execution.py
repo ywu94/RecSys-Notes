@@ -24,14 +24,18 @@ from torch import nn
 from sklearn.metrics import roc_auc_score
 
 EPOCHES = 5
-BATCH_SIZE = 512
+BATCH_SIZE = 2048
+
+EPOCHES_SEP = 5
+BATCH_SIZE_SEP = 512
 
 def get_roc_auc_score_separate_inp(model, test_data, device):
     """
     Get roc score for given model on prepared Criteo data. 
     The model will take a dense tensor and a sparse tensor as input.
     """
-    global BATCH_SIZE
+    global BATCH_SIZE_SEP
+    BATCH_SIZE = BATCH_SIZE_SEP
     
     model.eval()
     
@@ -82,8 +86,10 @@ def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, d
     : param optimizer
     : param device
     """
-    global EPOCHES
-    global BATCH_SIZE
+    global EPOCHES_SEP
+    EPOCHES = EPOCHES_SEP
+    global BATCH_SIZE_SEP
+    BATCH_SIZE = BATCH_SIZE_SEP
     
     if not os.path.isdir(checkpoint_dir):
         os.mkdir(checkpoint_dir)

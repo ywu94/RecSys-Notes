@@ -2,6 +2,14 @@
 
 Classic papers and resources on recommendation system, along with python implementation (focusing on PyTorch).
 
+## Implemented Model & Performance
+
+Model | Criteo Train AUC | Criteo Test AUC | Implementation | Note
+--- | --- | --- | ---
+Factorization Machine | 0.805224 | 0.792564 | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/FM_BinClf_Torch.py) | 
+Deep Factorization Machine | 0.819064 | 0.801416 | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DeepFM_BinClf_Torch.py) | 
+Deep Cross Network | | | [PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DCN_BinClf_Torch.py) |  
+
 ## Data Preparation
 
 ### Criteo Data
