@@ -1,16 +1,15 @@
-"""
-PyTorch implementation of Factorization Machine of degree d = 2 for binary classification
-
-References
-[1]Paper: https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf
-[2]JianzhouZhan Git: https://github.com/JianzhouZhan/Awesome-RecSystem-Models/blob/master/Model/FM_PyTorch.py 
-"""
-
 import torch
 assert torch.__version__>='1.2.0', 'Expect PyTorch>=1.2.0 but get {}'.format(torch.__version__)
 from torch import nn
 
 class FM_2D_Layer(nn.Module):
+    """
+    PyTorch implementation of Factorization Machine of degree d = 2 for binary classification
+
+    References
+    [1]Paper: https://www.csie.ntu.edu.tw/~b97053/paper/Rendle2010FM.pdf
+    [2]JianzhouZhan Git: https://github.com/JianzhouZhan/Awesome-RecSystem-Models/blob/master/Model/FM_PyTorch.py 
+    """
     def __init__(self, n_feature, n_field, embedding_dim, reg_l1=0, reg_l2=0, **kwargs):
         """
         : param n_feature: vocabulary size used for feature embedding (both dense and sparse)

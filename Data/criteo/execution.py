@@ -24,7 +24,7 @@ from torch import nn
 from sklearn.metrics import roc_auc_score
 
 EPOCHES = 5
-BATCH_SIZE = 2048
+BATCH_SIZE = 512
 
 def get_roc_auc_score_separate_inp(model, test_data, device):
     """
@@ -127,13 +127,6 @@ def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, d
                 pred_label = model(inp_dense, inp_sparse)
                 loss = loss_fn(pred_label, inp_label)
 
-                if model.reg_l1:
-                    for param in model.parameters():
-                        loss += model.reg_l1 * torch.sum(torch.abs(param))
-                if model.reg_l2:
-                    for param in model.parameters():
-                        loss += model.reg_l2 * torch.sum(torch.pow(param, 2))
-
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=100)
                 optimizer.step()
@@ -143,7 +136,7 @@ def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, d
                 if (batch_index+1)%1000==0:
                     model.eval()
                     
-                    batch_index_list = np.random.choice(test_index_ub, 8192)
+                    batch_index_list = np.random.choice(test_index_ub, 512)
                     
                     inp_index = test_feature_index[batch_index_list]
                     inp_value = test_feature_value[batch_index_list]
@@ -191,14 +184,6 @@ def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, d
                 true_y.extend(list(inp_label.cpu().detach().numpy()))
             
                 loss = loss_fn(pred_label, inp_label)
-
-                if model.reg_l1:
-                    for param in model.parameters():
-                        loss += model.reg_l1 * torch.sum(torch.abs(param))
-                        
-                if model.reg_l2:
-                    for param in model.parameters():
-                        loss += model.reg_l2 * torch.sum(torch.pow(param, 2))
                 
                 test_running_loss += loss.item()
                 

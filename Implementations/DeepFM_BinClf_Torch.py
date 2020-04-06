@@ -1,9 +1,4 @@
-"""
-PyTorch implementation of DeepFM of degree d = 2 for binary classification
 
-References
-[1]Paper: https://www.ijcai.org/Proceedings/2017/0239.pdf
-"""
 
 import torch
 assert torch.__version__>='1.2.0', 'Expect PyTorch>=1.2.0 but get {}'.format(torch.__version__)
@@ -11,11 +6,17 @@ from torch import nn
 import torch.nn.functional as F
 
 class DeepFM_2D_Layer(nn.Module):
+    """
+    PyTorch implementation of DeepFM of degree d = 2 for binary classification
+
+    References
+    [1]Paper: https://www.ijcai.org/Proceedings/2017/0239.pdf
+    """
     def __init__(self, n_feature, n_field, embedding_dim, ffn_size, fm_dropout, ffn_dropout, reg_l1=0, reg_l2=0, **kwargs):
         """
         : param n_feature: vocabulary size used for feature embedding (both dense and sparse)
         : param n_field: number of fields each input will have
-        : param embedding_dim: dimension of dense embedding
+        : param embedding_dim: dimension of embedding
         : param ffn_size: output dimensions for each feed forward network
         : param fm_dropout: dropout ratio for first degree and second degree output of FM
         : param ffn_dropout: dropout ratio for each feed forward network
