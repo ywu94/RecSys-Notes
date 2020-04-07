@@ -4,3 +4,4 @@ __pycache__
 *.pyc
 *_artifact/
 .ipynb_checkpoints/
+*.log
