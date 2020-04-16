@@ -14,7 +14,7 @@ import importlib
 
 importlib.reload(logging)
 logging.basicConfig(stream=sys.stdout, format='%(asctime)s %(levelname)-6s %(message)s', level=logging.INFO, datefmt='%H:%M:%S')
-logger = logging.getLogger(__name__)
+default_logger = logging.getLogger(__name__)
 
 import numpy as np
 import torch
@@ -29,7 +29,7 @@ BATCH_SIZE = 2048
 EPOCHES_SEP = 5
 BATCH_SIZE_SEP = 512
 
-def get_roc_auc_score_separate_inp(model, test_data, device):
+def get_roc_auc_score_separate_inp(model, test_data, device, logger=default_logger):
     """
     Get roc score for given model on prepared Criteo data. 
     The model will take a dense tensor and a sparse tensor as input.
@@ -68,6 +68,9 @@ def get_roc_auc_score_separate_inp(model, test_data, device):
             pred_y.extend(list(pred_label.cpu().detach().numpy()))
             true_y.extend(list(inp_label.cpu().detach().numpy()))
             
+            if (batch_index+1)%1000==0:
+                logger.info('Batch {}/{} Done'.format(batch_index+1, test_n_batch))
+            
     t = np.array(true_y).reshape((-1,))
     p = np.array(pred_y).reshape((-1,))
     
@@ -75,7 +78,7 @@ def get_roc_auc_score_separate_inp(model, test_data, device):
     
     return roc_score
 
-def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, device, checkpoint_dir, checkpoint_prefix):
+def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, device, checkpoint_dir, checkpoint_prefix, logger=default_logger):
     """
     Train model using prepared Criteo data.
     The model will take a dense tensor and a sparse tensor as input.
@@ -205,7 +208,7 @@ def train_model_separate_inp(model, train_data, test_data, loss_fn, optimizer, d
         torch.save(model.state_dict(), ck_file_path)
                     
 
-def get_roc_auc_score(model, test_data, device):
+def get_roc_auc_score(model, test_data, device, logger=default_logger):
     """
     Get roc score for given model on prepared Criteo data.
     The model will take a index tensor and value tensor as input.
@@ -241,7 +244,7 @@ def get_roc_auc_score(model, test_data, device):
     
     return roc_score
 
-def train_model(model, train_data, test_data, loss_fn, optimizer, device, checkpoint_dir, checkpoint_prefix):
+def train_model(model, train_data, test_data, loss_fn, optimizer, device, checkpoint_dir, checkpoint_prefix, logger=default_logger):
     """
     Train model using prepared Criteo data.
     The model will take a index tensor and value tensor as input.
