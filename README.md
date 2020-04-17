@@ -9,8 +9,8 @@ Model | Key Idea | Criteo Test AUC | Implementation
 Factorization Machine | Use embedding and dot product to learn interaction between features | `0.792564` after one epoch | [Paper](https://github.com/ywu94/RecSys-Notes/blob/master/Papers/Factorization%20Machine.pdf)<br/>[BiClf PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/FM_BinClf_Torch.py)
 Field-aware Factorization Machine | Expand embedding matrix to capture interaction between different fields separately | | | [Paper](https://github.com/ywu94/RecSys-Notes/blob/master/Papers/Field-aware%20Factorization%20Machine.pdf)
 Deep Factorization Machine | Combine `DNN` and `FM` | `0.801416` after two epoches | [Paper](https://github.com/ywu94/RecSys-Notes/blob/master/Papers/DeepFM-%20A%20Factorization-Machine%20based%20Neural%20Network%20for%20CTR%20Prediction.pdf)<br/>[BiClf PyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DeepFM_BinClf_Torch.py)
-Deep Cross Network | Use `Cross Net` to capture higher-degree interaction | | `0.804345` after three epoches | [Paper](https://github.com/ywu94/RecSys-Notes/blob/master/Papers/Deep%20%26%20Cross%20Network%20for%20Ads%20Click%20Prediction.pdf)<br/>[BiClfPyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DCN_BinClf_Torch.py)
-Extreme Deep Factorization Machine | Introduce `Compressed Interaction Network` to enhance Cross Net, capture feature interaction at vector level instead of bit level | | | 
+Deep Cross Network | Use `Cross Net` to capture higher-degree interaction | `0.804345` after three epoches | [Paper](https://github.com/ywu94/RecSys-Notes/blob/master/Papers/Deep%20%26%20Cross%20Network%20for%20Ads%20Click%20Prediction.pdf)<br/>[BiClfPyTorch](https://github.com/ywu94/RecSys-Notes/blob/master/Implementations/DCN_BinClf_Torch.py)
+Extreme Deep Factorization Machine | Introduce `Compressed Interaction Network` to enhance Cross Net, capture feature interaction at vector level instead of bit level | | 
 
 ## Data Preparation
 

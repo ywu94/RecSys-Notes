@@ -83,7 +83,7 @@ class DCN_Layer(nn.Module):
     References
     [1]Paper: https://arxiv.org/pdf/1708.05123.pdf
     """
-    def __init__(self, n_sparse_feature, sparse_embedding_dim, sparse_dim, dense_dim, ffn_dim, ffn_dropout, n_cross_op, *args, **kwargs):
+    def __init__(self, n_sparse_feature, sparse_embedding_dim, sparse_dim, dense_dim, ffn_dim, ffn_dropout, n_cross_op, reg_l1=0, reg_l2=0, **kwargs):
         """
         : param n_sparse_feature: vocabulary size used for sparse feature embedding
         : param sparse_embedding_dim: dimension of embedding for sparse feature
@@ -92,8 +92,10 @@ class DCN_Layer(nn.Module):
         : param ffn_dim: output dimensions for each feed forward network
         : param ffn_dropout: dropout ratios for each feed foreward network
         : param n_cross_op: number of cross op to perform
+        : param reg_l1: λ for l1 regularization
+        : param reg_l2: λ for l2 regularization
         """
-        super(DCN_Layer, self).__init__(*args, **kwargs)
+        super(DCN_Layer, self).__init__(**kwargs)
         assert isinstance(ffn_dim, list) and len(ffn_dim) > 0, 'Invalid setup for deep layer'
         assert isinstance(n_cross_op, int) and n_cross_op > 0, 'Invalid setup for cross layer'
         
@@ -104,6 +106,8 @@ class DCN_Layer(nn.Module):
         self.ffn_dim = ffn_dim
         self.ffn_dropout = ffn_dropout
         self.n_cross_op = n_cross_op
+        self.reg_l1 = reg_l1
+        self.reg_l2 = reg_l2
         
         self.sparse_embedding = nn.Embedding(n_sparse_feature, sparse_embedding_dim)
         nn.init.xavier_normal_(self.sparse_embedding.weight)

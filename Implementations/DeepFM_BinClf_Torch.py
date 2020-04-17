@@ -1,5 +1,3 @@
-
-
 import torch
 assert torch.__version__>='1.2.0', 'Expect PyTorch>=1.2.0 but get {}'.format(torch.__version__)
 from torch import nn

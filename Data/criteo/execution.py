@@ -27,7 +27,7 @@ EPOCHES = 5
 BATCH_SIZE = 2048
 
 EPOCHES_SEP = 5
-BATCH_SIZE_SEP = 512
+BATCH_SIZE_SEP = 4096
 
 def get_roc_auc_score_separate_inp(model, test_data, device, logger=default_logger):
     """
