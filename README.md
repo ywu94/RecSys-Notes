@@ -2,6 +2,9 @@
 
 Classic papers and resources on recommendation system, along with python implementation (focusing on PyTorch).
 
+## What should we consider about recommendation - [From Netflix](https://netflixtechblog.com/learning-a-personalized-homepage-aa8ec670359a): 
+> We want our recommendations to be accurate in that they are relevant to the tastes of our members, but they also need to be diverse so that we can address the spectrum of a member’s interests versus only focusing on one. We want to be able to highlight the depth in the catalog we have in those interests and also the breadth we have across other areas to help our members explore and even find new interests. We want our recommendations to be fresh and responsive to the actions a member takes, such as watching a show, adding to their list, or rating; but we also want some stability so that people are familiar with their homepage and can easily find videos they’ve been recommended in the recent past.
+
 ## Covered Model & Performance
 
 Model | Key Idea | Recommended Hyperparameter | Criteo Test AUC | Implementation
